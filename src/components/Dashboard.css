@@ -667,3 +667,66 @@
   border-color: var(--fifa-neon-green);
   background: rgba(198, 255, 0, 0.02);
 }
+
+/* Organizers & Directors KPI Deck */
+.organizers-kpi-deck {
+  margin-top: 0.5rem;
+  border-top: 2px solid var(--border-main);
+  padding-top: 0.75rem;
+}
+
+.organizers-kpi-deck h5 {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-family: monospace;
+  margin-bottom: 0.5rem;
+}
+
+.organizers-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .organizers-kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.organizer-kpi-card {
+  background: rgba(0, 0, 0, 0.25);
+  border: 2px solid var(--border-main);
+  border-radius: 6px;
+  padding: 0.45rem 0.65rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.organizer-kpi-card .lbl {
+  font-size: 0.62rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-family: monospace;
+}
+
+.organizer-kpi-card .val {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--fifa-neon-green);
+}
+
+.organizer-kpi-card .sub-val {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.organizer-kpi-card .val.highlight-gold {
+  color: #ffd700;
+}
+

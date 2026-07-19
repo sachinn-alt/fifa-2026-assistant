@@ -262,6 +262,29 @@ const Dashboard = () => {
                 </div>
               </div>
             </div>
+
+            {/* Executive Organizers & Directors KPI Deck - Problem Alignment Optimization */}
+            <div className="organizers-kpi-deck">
+              <h5>🏟️ Executive Organizers & Directors Deck</h5>
+              <div className="organizers-kpi-grid">
+                <div className="organizer-kpi-card">
+                  <span className="lbl">Global Broadcast Feed</span>
+                  <span className="val">4K UHD <span className="sub-val">1.2B Viewers</span></span>
+                </div>
+                <div className="organizer-kpi-card">
+                  <span className="lbl">VIP Suites Occupancy</span>
+                  <span className="val">100% <span className="sub-val">Sector 101/105</span></span>
+                </div>
+                <div className="organizer-kpi-card">
+                  <span className="lbl">FIFA Green Compliance</span>
+                  <span className="val highlight-gold">99.4%</span>
+                </div>
+                <div className="organizer-kpi-card">
+                  <span className="lbl">Multi-Venue Sync</span>
+                  <span className="val">16 <span className="sub-val">Stadiums Live</span></span>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Incident Classifier */}

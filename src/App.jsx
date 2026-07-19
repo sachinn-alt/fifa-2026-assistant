@@ -2,7 +2,16 @@ import { useState, useEffect } from 'react';
 import ChatInterface from './components/ChatInterface';
 import Dashboard from './components/Dashboard';
 import ModeToggle from './components/ModeToggle';
+import ErrorBoundary from './components/ErrorBoundary';
 
+/**
+ * App - Root application component for FIFA 2026 Nexus.
+ * Manages dual-persona mode switching (Fan/Staff), theme configuration,
+ * and wraps all children inside an ErrorBoundary for crash resilience.
+ *
+ * @component
+ * @returns {JSX.Element} The main application shell with header, mode toggle, and routed content.
+ */
 function App() {
   const [mode, setMode] = useState('fan'); // 'fan' or 'staff'
   const [theme, setTheme] = useState(() => {
@@ -38,35 +47,37 @@ function App() {
   }, [theme]);
 
   return (
-    <div className={`app-container ${mode}-mode`}>
-      <header className="app-header">
-        <div className="logo">
-          <span className="logo-accent">FIFA 2026</span> NEXUS
-        </div>
-        
-        <div className="header-controls">
-          {/* Theme Switcher Dropdown */}
-          <div className="theme-selector-container">
-            <select 
-              value={theme} 
-              onChange={(e) => setTheme(e.target.value)} 
-              className="theme-select-dropdown"
-              aria-label="Select Theme Mode"
-            >
-              <option value="dark">🌙 Dark</option>
-              <option value="light">☀️ Light</option>
-              <option value="system">💻 System</option>
-            </select>
+    <ErrorBoundary>
+      <div className={`app-container ${mode}-mode`}>
+        <header className="app-header">
+          <div className="logo">
+            <span className="logo-accent">FIFA 2026</span> NEXUS
           </div>
+          
+          <div className="header-controls">
+            {/* Theme Switcher Dropdown */}
+            <div className="theme-selector-container">
+              <select 
+                value={theme} 
+                onChange={(e) => setTheme(e.target.value)} 
+                className="theme-select-dropdown"
+                aria-label="Select Theme Mode"
+              >
+                <option value="dark">🌙 Dark</option>
+                <option value="light">☀️ Light</option>
+                <option value="system">💻 System</option>
+              </select>
+            </div>
 
-          <ModeToggle currentMode={mode} onToggle={setMode} />
-        </div>
-      </header>
+            <ModeToggle currentMode={mode} onToggle={setMode} />
+          </div>
+        </header>
 
-      <main className="app-main">
-        {mode === 'fan' ? <ChatInterface /> : <Dashboard />}
-      </main>
-    </div>
+        <main className="app-main">
+          {mode === 'fan' ? <ChatInterface /> : <Dashboard />}
+        </main>
+      </div>
+    </ErrorBoundary>
   );
 }
 
