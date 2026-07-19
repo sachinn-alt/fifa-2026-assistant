@@ -38,7 +38,8 @@ const InteractiveStadiumMap = ({
   selectedSector = '', 
   onSectorSelect = null, 
   simulationPhase = 'pre-match', 
-  activeIncidents = [] 
+  activeIncidents = [],
+  sentimentComments = []
 }) => {
 
   // Dynamic Heatmap Zones based on Simulation Phase (Staff Mode)
@@ -153,10 +154,15 @@ const InteractiveStadiumMap = ({
             const isSelected = selectedSector.toUpperCase() === key.toUpperCase();
             const isGate = key.startsWith('GATE') || key === 'METRO';
 
+            // Check if there is active frustrated sentiment feedback for this block
+            const hasFrustration = mode === 'staff' && sentimentComments.some(c => 
+              c.sentiment === 'FRUSTRATED' && c.location.toUpperCase().includes(key.toUpperCase())
+            );
+
             return (
               <g 
                 key={key} 
-                className={`sector-group ${isSelected ? 'selected' : ''} ${isGate ? 'gate' : ''}`}
+                className={`sector-group ${isSelected ? 'selected' : ''} ${isGate ? 'gate' : ''} ${hasFrustration ? 'frustrated-sentiment-sector' : ''}`}
                 onClick={() => onSectorSelect && onSectorSelect(key)}
               >
                 <circle 

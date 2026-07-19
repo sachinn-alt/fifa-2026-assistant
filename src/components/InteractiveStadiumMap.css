@@ -273,8 +273,24 @@
   font-size: 0.8rem;
   color: var(--text-muted);
   line-height: 1.4;
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--bg-panel);
   padding: 0.5rem 0.75rem;
-  border-radius: 8px;
-  border-left: 3px solid var(--fifa-neon-green);
+  border-radius: 4px;
+  border-left: 4px solid var(--fifa-neon-green);
+  font-family: var(--font-body);
+}
+
+.sector-group.frustrated-sentiment-sector .sector-bg {
+  stroke: var(--fifa-magenta) !important;
+  fill: rgba(255, 0, 93, 0.15) !important;
+  animation: frustrated-sector-pulse 1.2s infinite alternate;
+}
+
+.sector-group.frustrated-sentiment-sector .sector-text {
+  fill: var(--fifa-magenta) !important;
+}
+
+@keyframes frustrated-sector-pulse {
+  0% { stroke-width: 2px; }
+  100% { stroke-width: 4px; }
 }

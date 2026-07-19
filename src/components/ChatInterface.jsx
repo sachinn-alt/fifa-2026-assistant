@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { generateAIResponse } from '../services/aiService';
+import { generateAIResponse, generateMatchdayItinerary } from '../services/aiService';
 import InteractiveStadiumMap from './InteractiveStadiumMap';
 import './ChatInterface.css';
 
@@ -38,6 +38,13 @@ const ChatInterface = () => {
   const [userSector, setUserSector] = useState('');
   const [isListening, setIsListening] = useState(false);
   const [speakingMsgId, setSpeakingMsgId] = useState(null);
+  
+  // Feature 1: AI Itinerary Setup States
+  const [arrivalMode, setArrivalMode] = useState('metro');
+  const [accessibilityNeed, setAccessibilityNeed] = useState('none');
+  const [foodPreference, setFoodPreference] = useState('any');
+  const [isGeneratingItinerary, setIsGeneratingItinerary] = useState(false);
+
   const messagesEndRef = useRef(null);
   const recognitionRef = useRef(null);
 
@@ -204,6 +211,44 @@ const ChatInterface = () => {
       window.speechSynthesis.cancel();
       setSpeakingMsgId(null);
     }
+  };
+
+  // Feature 1: Generate AI Personal Itinerary
+  const handleGenerateItinerary = async () => {
+    setIsGeneratingItinerary(true);
+    
+    // Auto-select sector based on concessions/accessibility preferences to trigger map navigation routing
+    let resolvedSector = userSector || '101';
+    if (foodPreference === 'veg') resolvedSector = '104';
+    else if (foodPreference === 'halal') resolvedSector = '202';
+    else if (accessibilityNeed === 'sensory') resolvedSector = '205';
+    
+    setUserSector(resolvedSector);
+
+    const userQuery = `Generate my matchday itinerary plan arriving via ${arrivalMode.toUpperCase()} with ${accessibilityNeed.toUpperCase()} needs and ${foodPreference.toUpperCase()} food targets.`;
+    
+    const userMsg = {
+      id: Date.now(),
+      sender: 'user',
+      text: userQuery,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+
+    setMessages(prev => [...prev, userMsg]);
+    setIsTyping(true);
+
+    const itineraryResult = await generateMatchdayItinerary(arrivalMode, accessibilityNeed, foodPreference, resolvedSector);
+
+    const aiMsg = {
+      id: Date.now() + 1,
+      sender: 'ai',
+      text: itineraryResult,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+
+    setIsTyping(false);
+    setMessages(prev => [...prev, aiMsg]);
+    setIsGeneratingItinerary(false);
   };
 
   // Cleanup speech synthesis on unmount
@@ -396,6 +441,48 @@ const ChatInterface = () => {
               ))}
             </div>
           </div>
+        </div>
+
+        {/* Feature 1: AI Itinerary Builder */}
+        <div className="glass-panel itinerary-card">
+          <h4>AI Itinerary Builder</h4>
+          <p className="description-text">Generate a step-by-step personalized matchday timeline plan.</p>
+          
+          <div className="itinerary-form-grid">
+            <div className="itinerary-select-group">
+              <label>Arrival Transit</label>
+              <select value={arrivalMode} onChange={(e) => setArrivalMode(e.target.value)} className="itinerary-select">
+                <option value="metro">🚇 Metro Line 2</option>
+                <option value="shuttle">🚌 Shuttle Lot B</option>
+                <option value="parking">🚗 Parking Lot A</option>
+              </select>
+            </div>
+            <div className="itinerary-select-group">
+              <label>Accessibility</label>
+              <select value={accessibilityNeed} onChange={(e) => setAccessibilityNeed(e.target.value)} className="itinerary-select">
+                <option value="none">🟢 Standard Entry</option>
+                <option value="wheelchair">♿ Wheelchair Priority</option>
+                <option value="sensory">🧩 Sensory Room Booking</option>
+              </select>
+            </div>
+            <div className="itinerary-select-group">
+              <label>Concession Target</label>
+              <select value={foodPreference} onChange={(e) => setFoodPreference(e.target.value)} className="itinerary-select">
+                <option value="any">🍔 Any Concession</option>
+                <option value="veg">🌱 Vegetarian Option</option>
+                <option value="halal">🕌 Halal certified</option>
+              </select>
+            </div>
+          </div>
+
+          <button 
+            type="button" 
+            onClick={handleGenerateItinerary} 
+            className="itinerary-generate-btn"
+            disabled={isGeneratingItinerary || isTyping}
+          >
+            {isGeneratingItinerary ? 'AI Planning...' : '📋 Generate AI Itinerary'}
+          </button>
         </div>
 
         {/* Stadium Map */}

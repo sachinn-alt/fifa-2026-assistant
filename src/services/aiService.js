@@ -1,7 +1,7 @@
 /**
  * AI Service Module - FIFA 2026 Nexus
  * Handles intelligent interaction, incident parsing, crowd flow predictions,
- * and simulated multilingual translation for stadium operations.
+ * simulated multilingual translation, itinerary generation, and sentiment analysis.
  */
 
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -80,7 +80,7 @@ function matchQueryKey(prompt) {
   if (lower.includes("metro") || lower.includes("train") || lower.includes("bus") || lower.includes("transport") || lower.includes("transit") || lower.includes("leave") || lower.includes("parking")) return "transport";
   if (lower.includes("wheelchair") || lower.includes("accessible") || lower.includes("disabled") || lower.includes("elevator") || lower.includes("handicap")) return "access_toilet";
   if (lower.includes("sensory") || lower.includes("quiet") || lower.includes("calm") || lower.includes("autism") || lower.includes("adhd")) return "sensory";
-  if (lower.includes("waste") || lower.includes("recycle") || lower.includes("compost") || lower.includes("bin") || lower.includes("trash") || lower.includes("green") || lower.includes("sustainability")) return "waste";
+  if (lower.includes("waste") || lower.includes("recycle") || lower.includes("compost") || lower.includes("bin") || lower.includes("trash") || lower.includes("sustainability")) return "waste";
   if (lower.includes("gate c") || lower.includes("gatec") || lower.includes("find gate")) return "gate_c";
   
   return "default";
@@ -201,4 +201,100 @@ export function translateVolunteerDispatch(message, targetLang) {
     ja: " [日本語に翻訳]"
   };
   return cleanMessage + (langSuffixes[targetLang] || ` [Translated to ${targetLang.toUpperCase()}]`);
+}
+
+/**
+ * Feature 1: AI Personal Matchday Itinerary Generator
+ */
+export async function generateMatchdayItinerary(arrival, accessibility, food, block = '') {
+  await delay(1200); // Simulated scheduling lookup latency
+  
+  const selectedBlock = block || 'your sector';
+  let gates = 'Gate A';
+  let elevatorNote = '';
+  let foodConcession = 'Concourse Concessions';
+  let quietZoneNote = '';
+  
+  // Resolve gate based on arrival
+  if (arrival === 'metro') gates = 'Gate B (East)';
+  if (arrival === 'shuttle') gates = 'Gate C (North)';
+  if (arrival === 'parking') gates = 'Gate A (West)';
+
+  // Resolve accessibility routes
+  if (accessibility === 'wheelchair') {
+    elevatorNote = '⚠️ Wheelchair Path: Enter via Elevator Lift A-1 adjacent to Gate B lobby. St Stewards will assist with ramp routing.';
+  } else if (accessibility === 'sensory') {
+    quietZoneNote = '🧩 Sensory Advisory: Sensory Rooms with quiet zones and noise-reduction packs are located in Sector 205 (Level 2).';
+  }
+
+  // Resolve concession recommendations
+  if (food === 'veg') {
+    foodConcession = "🌱 'Green Pitch' Concessions (Block 104, Level 1) - Estimated wait time: 5 mins.";
+  } else if (food === 'halal') {
+    foodConcession = "🕌 'Hub Concessions' (Block 202) or 'Global Eats' (Block 308) - Certified ingredients.";
+  }
+
+  const timeline = `
+📋 YOUR PERSONAL MATCHDAY PLAN:
+----------------------------------------
+📍 SECTOR: Block ${selectedBlock.toUpperCase()}
+🚗 ARRIVAL MODE: ${arrival.toUpperCase()}
+🛡️ ACCESSIBILITY: ${accessibility.toUpperCase()}
+🍔 CONCESSION TARGET: ${food.toUpperCase()}
+
+⏱️ ITINERARY TIMELINE:
+- [T - 2.0 Hrs] Arrive via ${arrival.toUpperCase()} transport terminal.
+- [T - 1.7 Hrs] Proceed to stadium entry gate: ${gates}.
+- [T - 1.5 Hrs] Security scan & check-in. ${elevatorNote ? `\n  ${elevatorNote}` : ''}
+- [T - 1.2 Hrs] Concession Stop: Visit ${foodConcession}
+- [T - 0.8 Hrs] ${quietZoneNote ? `${quietZoneNote}\n- [T - 0.5 Hrs] ` : ''}Locate seats in Block ${selectedBlock.toUpperCase()}. E-navigation route highlights lift corridors.
+- [T - 0.1 Hrs] Kick-off ceremony. Enjoy the match!
+  `;
+
+  return timeline;
+}
+
+/**
+ * Feature 3: Fan Comments Sentiment Analysis Classifier
+ */
+export function classifyFanComment(comment) {
+  const lower = comment.toLowerCase();
+  let sentiment = 'NEUTRAL';
+  let category = 'AMENITIES';
+  let location = 'Stadium Area';
+  let action = 'Logged in operations feedback stream.';
+
+  // Location detection
+  if (lower.includes('gate b') || lower.includes('gateb')) location = 'Gate B Restrooms';
+  else if (lower.includes('sector 104') || lower.includes('104')) location = 'Sector 104 Food Court';
+  else if (lower.includes('gate c') || lower.includes('gatec')) location = 'Gate C';
+  else if (lower.includes('metro')) location = 'Metro Entrance';
+  else if (lower.includes('205') || lower.includes('sensory')) location = 'Sector 205 Sensory Room';
+
+  // Sentiment detection
+  if (lower.includes('huge line') || lower.includes('wait') || lower.includes('congested') || lower.includes('crowded') || lower.includes('leak') || lower.includes('broken') || lower.includes('stuck') || lower.includes('mess') || lower.includes('frustrated') || lower.includes('slow')) {
+    sentiment = 'FRUSTRATED';
+    
+    // Category mapping
+    if (lower.includes('line') || lower.includes('wait') || lower.includes('stuck') || lower.includes('slow')) {
+      category = 'CROWD';
+      action = `Crowd Alert generated. Send detour advisories to spectators near ${location}.`;
+    } else {
+      category = 'FACILITY';
+      action = `Maintenance dispatcher alert. Request cleanup/inspection squad at ${location}.`;
+    }
+  } else if (lower.includes('great') || lower.includes('good') || lower.includes('fast') || lower.includes('clean') || lower.includes('happy') || lower.includes('excellent') || lower.includes('fluid')) {
+    sentiment = 'POSITIVE';
+    category = 'FACILITY';
+    action = 'No action required. Positive feedback cataloged.';
+  }
+
+  return {
+    raw: comment,
+    sentiment,
+    category,
+    location,
+    action,
+    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+  };
 }
