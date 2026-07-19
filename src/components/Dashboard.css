@@ -590,8 +590,80 @@
 
 .translated-msg {
   color: var(--fifa-neon-green);
-  background: rgba(0, 255, 135, 0.04);
-  padding: 0.35rem 0.5rem;
+  background: rgba(198, 255, 0, 0.04);
+  padding: 0.3rem 0.45rem;
   border-radius: 4px;
-  border-left: 2.5px solid var(--fifa-neon-green);
+  border-left: 3px solid var(--fifa-neon-green);
+  font-weight: 700;
+}
+
+/* Sustainability Tracker Widget Styling */
+.sustainability-tracker-widget {
+  margin-top: 0.5rem;
+  border-top: 2px solid var(--border-main);
+  padding-top: 0.75rem;
+}
+
+.sustainability-tracker-widget h5 {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-family: monospace;
+  margin-bottom: 0.5rem;
+}
+
+.sustainability-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+@media (max-width: 480px) {
+  .sustainability-stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sust-stat-card {
+  background: rgba(0, 0, 0, 0.25);
+  border: 2px solid var(--border-main);
+  border-radius: 6px;
+  padding: 0.45rem 0.65rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.sust-stat-card .lbl {
+  font-size: 0.62rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-family: monospace;
+}
+
+.sust-stat-card .val {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--fifa-neon-green);
+}
+
+.sust-stat-card .sub-val {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.sust-stat-card.active-leak {
+  border-color: var(--fifa-magenta);
+}
+
+.sust-stat-card.active-leak .val {
+  color: var(--fifa-magenta);
+}
+
+.sust-stat-card.achieved {
+  border-color: var(--fifa-neon-green);
+  background: rgba(198, 255, 0, 0.02);
 }

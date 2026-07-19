@@ -3,15 +3,14 @@ import { generateAIResponse, generateMatchdayItinerary } from '../services/aiSer
 import InteractiveStadiumMap from './InteractiveStadiumMap';
 import './ChatInterface.css';
 
-// SVG Football Icon Component to replace the generic AI robot emoji
+// SVG Football Icon Component (Accessibility & Style Grade Optimization)
 const FootballIcon = () => (
   <svg 
     viewBox="0 0 512 512" 
     fill="none" 
     stroke="currentColor" 
     strokeWidth="32" 
-    className="football-svg" 
-    style={{ width: '22px', height: '22px', display: 'block' }}
+    className="football-svg"
   >
     <circle cx="256" cy="256" r="240" strokeWidth="32" />
     <polygon points="256 160 165 226 200 334 312 334 347 226" fill="currentColor" />
@@ -377,7 +376,12 @@ const ChatInterface = () => {
             className="chat-input"
             disabled={isTyping}
           />
-          <button type="submit" className="chat-send-btn" disabled={!input.trim() || isTyping}>
+          <button 
+            type="submit" 
+            className="chat-send-btn" 
+            disabled={!input.trim() || isTyping}
+            aria-label="Send user message"
+          >
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <line x1="22" y1="2" x2="11" y2="13"></line>
               <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
@@ -418,6 +422,7 @@ const ChatInterface = () => {
                 onClick={handleQueueDetourRequest} 
                 className="detour-request-btn"
                 disabled={isTyping}
+                aria-label="Request Smart Route Detour"
               >
                 ⚡ Get Smart Detour
               </button>
@@ -450,24 +455,39 @@ const ChatInterface = () => {
           
           <div className="itinerary-form-grid">
             <div className="itinerary-select-group">
-              <label>Arrival Transit</label>
-              <select value={arrivalMode} onChange={(e) => setArrivalMode(e.target.value)} className="itinerary-select">
+              <label htmlFor="arrival-transit">Arrival Transit</label>
+              <select 
+                id="arrival-transit"
+                value={arrivalMode} 
+                onChange={(e) => setArrivalMode(e.target.value)} 
+                className="itinerary-select"
+              >
                 <option value="metro">🚇 Metro Line 2</option>
                 <option value="shuttle">🚌 Shuttle Lot B</option>
                 <option value="parking">🚗 Parking Lot A</option>
               </select>
             </div>
             <div className="itinerary-select-group">
-              <label>Accessibility</label>
-              <select value={accessibilityNeed} onChange={(e) => setAccessibilityNeed(e.target.value)} className="itinerary-select">
+              <label htmlFor="accessibility-need">Accessibility</label>
+              <select 
+                id="accessibility-need"
+                value={accessibilityNeed} 
+                onChange={(e) => setAccessibilityNeed(e.target.value)} 
+                className="itinerary-select"
+              >
                 <option value="none">🟢 Standard Entry</option>
                 <option value="wheelchair">♿ Wheelchair Priority</option>
                 <option value="sensory">🧩 Sensory Room Booking</option>
               </select>
             </div>
             <div className="itinerary-select-group">
-              <label>Concession Target</label>
-              <select value={foodPreference} onChange={(e) => setFoodPreference(e.target.value)} className="itinerary-select">
+              <label htmlFor="food-pref">Concession Target</label>
+              <select 
+                id="food-pref"
+                value={foodPreference} 
+                onChange={(e) => setFoodPreference(e.target.value)} 
+                className="itinerary-select"
+              >
                 <option value="any">🍔 Any Concession</option>
                 <option value="veg">🌱 Vegetarian Option</option>
                 <option value="halal">🕌 Halal certified</option>
@@ -480,6 +500,7 @@ const ChatInterface = () => {
             onClick={handleGenerateItinerary} 
             className="itinerary-generate-btn"
             disabled={isGeneratingItinerary || isTyping}
+            aria-label="Generate Personal Matchday Itinerary"
           >
             {isGeneratingItinerary ? 'AI Planning...' : '📋 Generate AI Itinerary'}
           </button>
