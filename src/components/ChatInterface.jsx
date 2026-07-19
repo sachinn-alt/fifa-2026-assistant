@@ -3,6 +3,26 @@ import { generateAIResponse } from '../services/aiService';
 import InteractiveStadiumMap from './InteractiveStadiumMap';
 import './ChatInterface.css';
 
+// SVG Football Icon Component to replace the generic AI robot emoji
+const FootballIcon = () => (
+  <svg 
+    viewBox="0 0 512 512" 
+    fill="none" 
+    stroke="currentColor" 
+    strokeWidth="32" 
+    className="football-svg" 
+    style={{ width: '22px', height: '22px', display: 'block' }}
+  >
+    <circle cx="256" cy="256" r="240" strokeWidth="32" />
+    <polygon points="256 160 165 226 200 334 312 334 347 226" fill="currentColor" />
+    <line x1="256" y1="16" x2="256" y2="160" />
+    <line x1="28" y1="181" x2="165" y2="226" />
+    <line x1="115" y1="448" x2="200" y2="334" />
+    <line x1="397" y1="448" x2="312" y2="334" />
+    <line x1="484" y1="181" x2="347" y2="226" />
+  </svg>
+);
+
 const ChatInterface = () => {
   const [messages, setMessages] = useState([
     {
@@ -199,7 +219,9 @@ const ChatInterface = () => {
       <div className="chat-container glass-panel">
         <div className="chat-header">
           <div className="assistant-info">
-            <div className="ai-avatar">🤖</div>
+            <div className="ai-avatar">
+              <FootballIcon />
+            </div>
             <div>
               <h3>AI Concierge</h3>
               <span className="subtitle">FIFA 2026 Nexus Companion</span>

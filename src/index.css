@@ -24,6 +24,20 @@
   --block-shadow-hover: 6px 6px 0px 0px var(--fifa-neon-green);
 }
 
+/* Light Theme Variables Override */
+html[data-theme="light"] {
+  --bg-dark: #f0f0f4;
+  --bg-panel: #ffffff;
+  --bg-panel-hover: #e5e5ee;
+  --border-main: #121216; /* Bold black borders remain for brutalism */
+  --text-main: #09090b;
+  --text-muted: #5c5c6b;
+  
+  --fifa-neon-green: #a6d200; /* Slightly darker lime for light mode contrast */
+  --fifa-magenta: #d6004e;
+  --fifa-purple: #7000cc;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -37,12 +51,19 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   
-  /* Tactical Planner Grid Background */
+  /* Tactical Planner Grid Background (Dark Mode Default) */
   background-image: 
     linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
   background-size: 20px 20px;
   background-position: center;
+}
+
+/* Grid Background Override (Light Mode) */
+html[data-theme="light"] body {
+  background-image: 
+    linear-gradient(rgba(0, 0, 0, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.025) 1px, transparent 1px);
 }
 
 /* App Layout */
@@ -81,6 +102,43 @@ body {
   padding: 0.15rem 0.5rem;
   border-radius: 4px;
   font-weight: 900;
+  border: 1px solid var(--border-main);
+}
+
+/* Header Controls Grid */
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+/* Theme Selector dropdown styling */
+.theme-selector-container {
+  display: flex;
+  align-items: center;
+}
+
+.theme-select-dropdown {
+  background: var(--bg-panel);
+  border: 2px solid var(--border-main);
+  color: var(--text-main);
+  padding: 0.35rem 0.75rem;
+  border-radius: 6px;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 700;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.theme-select-dropdown:hover {
+  background: var(--bg-panel-hover);
+}
+
+.theme-select-dropdown:focus {
+  border-color: var(--fifa-neon-green);
 }
 
 .app-main {
@@ -108,7 +166,7 @@ body {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: rgba(0,0,0,0.2);
+  background: rgba(0,0,0,0.1);
 }
 ::-webkit-scrollbar-thumb {
   background: var(--border-main);
