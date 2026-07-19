@@ -74,11 +74,12 @@ const TRANSLATIONS = {
 function matchQueryKey(prompt) {
   const lower = prompt.toLowerCase();
   
+  if (lower.includes("welcome") || lower.includes("hello") || lower.includes("hi") || lower.includes("greetings") || lower.includes("hola") || lower.includes("bonjour")) return "welcome";
   if (lower.includes("halal") || lower.includes("muslim")) return "food_halal";
   if (lower.includes("veg") || lower.includes("vegetarian") || lower.includes("vegan") || lower.includes("meat-free") || lower.includes("eat")) return "food_veg";
+  if (lower.includes("wheelchair") || lower.includes("accessible") || lower.includes("disabled") || lower.includes("elevator") || lower.includes("handicap")) return "access_toilet";
   if (lower.includes("bathroom") || lower.includes("restroom") || lower.includes("toilet") || lower.includes("wc") || lower.includes("lavatory")) return "bathroom";
   if (lower.includes("metro") || lower.includes("train") || lower.includes("bus") || lower.includes("transport") || lower.includes("transit") || lower.includes("leave") || lower.includes("parking")) return "transport";
-  if (lower.includes("wheelchair") || lower.includes("accessible") || lower.includes("disabled") || lower.includes("elevator") || lower.includes("handicap")) return "access_toilet";
   if (lower.includes("sensory") || lower.includes("quiet") || lower.includes("calm") || lower.includes("autism") || lower.includes("adhd")) return "sensory";
   if (lower.includes("waste") || lower.includes("recycle") || lower.includes("compost") || lower.includes("bin") || lower.includes("trash") || lower.includes("sustainability")) return "waste";
   if (lower.includes("gate c") || lower.includes("gatec") || lower.includes("find gate")) return "gate_c";
@@ -287,6 +288,10 @@ export function classifyFanComment(comment) {
     sentiment = 'POSITIVE';
     category = 'FACILITY';
     action = 'No action required. Positive feedback cataloged.';
+  } else {
+    if (lower.includes('sensory') || lower.includes('quiet') || lower.includes('room')) {
+      action = 'AI routing guide sent directly to user terminal.';
+    }
   }
 
   return {
