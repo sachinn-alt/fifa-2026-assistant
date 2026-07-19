@@ -1,0 +1,246 @@
+.stadium-map-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  height: 100%;
+}
+
+.map-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.map-header h4 {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.map-legend {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.legend-item .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.dot.veg { background: #00ff87; }
+.dot.halal { background: #ffaa00; }
+.dot.toilet { background: #00d0ff; }
+.dot.wheelchair { background: #0055ff; }
+.dot.sensory { background: #9d00ff; }
+.dot.heat-high { background: #ff0055; }
+.dot.heat-med { background: #ffaa00; }
+.dot.heat-low { background: #00ff87; }
+
+.svg-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  border: 1px solid var(--border-subtle);
+  padding: 1rem;
+}
+
+.stadium-svg {
+  width: 100%;
+  max-width: 420px;
+  height: auto;
+}
+
+.outer-boundary {
+  fill: none;
+  stroke: var(--border-subtle);
+  stroke-width: 2.5;
+}
+
+.concourse-ring {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.05);
+  stroke-width: 12;
+  stroke-linecap: round;
+}
+
+.pitch-base {
+  fill: rgba(0, 255, 135, 0.06);
+  stroke: rgba(0, 255, 135, 0.15);
+  stroke-width: 1;
+}
+
+.pitch-grass {
+  fill: rgba(0, 255, 135, 0.04);
+}
+
+.sector-group {
+  cursor: pointer;
+}
+
+.sector-bg {
+  fill: var(--bg-panel-hover);
+  stroke: var(--border-subtle);
+  stroke-width: 1.2;
+  transition: all 0.3s ease;
+}
+
+.sector-text {
+  fill: var(--text-muted);
+  font-size: 8px;
+  font-weight: 700;
+  text-anchor: middle;
+  transition: all 0.3s ease;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* Hover and active states for sectors */
+.sector-group:hover .sector-bg {
+  fill: rgba(255, 255, 255, 0.15);
+  stroke: rgba(255, 255, 255, 0.4);
+}
+
+.sector-group:hover .sector-text {
+  fill: var(--text-main);
+}
+
+.sector-group.selected .sector-bg {
+  fill: rgba(0, 255, 135, 0.15);
+  stroke: var(--fifa-neon-green);
+  filter: drop-shadow(0 0 4px rgba(0, 255, 135, 0.4));
+}
+
+.sector-group.selected .sector-text {
+  fill: var(--fifa-neon-green);
+}
+
+/* Gates configuration */
+.sector-group.gate .sector-bg {
+  fill: rgba(255, 0, 85, 0.04);
+  stroke: rgba(255, 0, 85, 0.2);
+}
+
+.sector-group.gate .sector-text {
+  fill: rgba(255, 0, 85, 0.8);
+}
+
+.sector-group.gate:hover .sector-bg {
+  fill: rgba(255, 0, 85, 0.1);
+  stroke: rgba(255, 0, 85, 0.5);
+}
+
+.sector-group.gate.selected .sector-bg {
+  fill: rgba(255, 0, 85, 0.15);
+  stroke: var(--fifa-magenta);
+  filter: drop-shadow(0 0 4px rgba(255, 0, 85, 0.4));
+}
+
+.sector-group.gate.selected .sector-text {
+  fill: var(--fifa-magenta);
+}
+
+/* Facility dots and pulses */
+.facility-dot {
+  opacity: 0.65;
+  transition: all 0.3s ease;
+}
+
+.facility-marker.highlighted .facility-dot {
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+.facility-pulse {
+  transform-origin: center;
+  animation: facility-pulse-anim 1.8s infinite ease-out;
+}
+
+@keyframes facility-pulse-anim {
+  0% {
+    r: 6px;
+    opacity: 0.8;
+  }
+  100% {
+    r: 18px;
+    opacity: 0;
+  }
+}
+
+/* Pulse effects for Heatmaps */
+.pulse-glow {
+  transform-origin: center;
+  animation: heat-glow-anim 2s infinite ease-in-out alternate;
+}
+
+@keyframes heat-glow-anim {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+}
+
+/* Incident Marker Animations */
+.incident-pulse {
+  transform-origin: center;
+  animation: incident-pulse-anim 1.5s infinite ease-out;
+}
+
+@keyframes incident-pulse-anim {
+  0% {
+    r: 10px;
+    opacity: 0.8;
+  }
+  100% {
+    r: 40px;
+    opacity: 0;
+  }
+}
+
+.map-incident-marker path {
+  animation: bounce-marker 1s infinite alternate;
+  transform-origin: center;
+}
+
+@keyframes bounce-marker {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-4px);
+  }
+}
+
+/* Map Footer styling */
+.map-footer {
+  margin-top: auto;
+}
+
+.hint-text {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  border-left: 3px solid var(--fifa-neon-green);
+}

@@ -1,0 +1,56 @@
+.toggle-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  border: 1px solid var(--border-subtle);
+}
+
+.toggle-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  transition: color 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.toggle-label.active {
+  color: var(--text-main);
+}
+
+.toggle-btn {
+  width: 50px;
+  height: 26px;
+  background: var(--bg-panel-hover);
+  border: 1px solid var(--border-subtle);
+  border-radius: 13px;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.toggle-slider {
+  width: 20px;
+  height: 20px;
+  background: var(--text-main);
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.toggle-btn.fan .toggle-slider {
+  background: var(--fifa-neon-green);
+  box-shadow: var(--glow-green);
+}
+
+.toggle-btn.staff .toggle-slider {
+  left: 26px;
+  background: var(--fifa-magenta);
+  box-shadow: 0 0 15px rgba(255, 0, 85, 0.4);
+}
