@@ -230,6 +230,40 @@
   }
 }
 
+/* Navigation Routing Paths Option B */
+.route-glow-line {
+  filter: drop-shadow(0 0 2px currentColor);
+}
+
+.route-dash-line {
+  animation: route-flow-dash 0.6s infinite linear;
+}
+
+@keyframes route-flow-dash {
+  0% {
+    stroke-dashoffset: 10;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.route-ping-pulse {
+  transform-origin: center;
+  animation: route-ping-pulse-anim 1.5s infinite ease-out;
+}
+
+@keyframes route-ping-pulse-anim {
+  0% {
+    r: 4px;
+    opacity: 0.9;
+  }
+  100% {
+    r: 14px;
+    opacity: 0;
+  }
+}
+
 /* Map Footer styling */
 .map-footer {
   margin-top: auto;

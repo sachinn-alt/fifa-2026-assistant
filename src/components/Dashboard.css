@@ -2,7 +2,7 @@
   display: grid;
   grid-template-columns: 1fr;
   gap: 1.5rem;
-  height: calc(100vh - 120px);
+  height: calc(100vh - 200px); /* Adjusted for top stats bar height */
   overflow: hidden;
 }
 
@@ -76,6 +76,94 @@
   0% { box-shadow: 0 0 0 0 rgba(255, 0, 85, 0.7); }
   70% { box-shadow: 0 0 0 8px rgba(255, 0, 85, 0); }
   100% { box-shadow: 0 0 0 0 rgba(255, 0, 85, 0); }
+}
+
+/* Option C: Top Statistics Counters Bar */
+.top-stats-counters-bar {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 480px) {
+  .top-stats-counters-bar {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 900px) {
+  .top-stats-counters-bar {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.stat-counter-card {
+  padding: 0.75rem 1rem !important;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  border: 1px solid var(--border-subtle);
+  transition: all 0.3s ease;
+}
+
+.stat-counter-card .card-label {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.stat-counter-card .card-value {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.stat-counter-card .pct {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--fifa-neon-green);
+  background: rgba(0, 255, 135, 0.08);
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+}
+
+.stat-counter-card .fleet-sub {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+/* Incident alarm active visual option C */
+.stat-counter-card.alarm-active {
+  border-color: rgba(255, 0, 85, 0.4);
+  background: rgba(255, 0, 85, 0.04);
+  box-shadow: inset 0 0 10px rgba(255, 0, 85, 0.05);
+  animation: alarm-pulse-border 1.5s infinite alternate;
+}
+
+@keyframes alarm-pulse-border {
+  0% { border-color: rgba(255, 0, 85, 0.3); }
+  100% { border-color: rgba(255, 0, 85, 0.7); box-shadow: 0 0 8px rgba(255, 0, 85, 0.1); }
+}
+
+.warning-alarm-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--fifa-magenta);
+  border-radius: 50%;
+  animation: alarm-dot-pulse 0.8s infinite alternate;
+}
+
+@keyframes alarm-dot-pulse {
+  0% { transform: scale(0.8); opacity: 0.5; }
+  100% { transform: scale(1.2); opacity: 1; }
 }
 
 /* Analytics Control Card */

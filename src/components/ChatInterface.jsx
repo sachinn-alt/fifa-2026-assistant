@@ -16,7 +16,10 @@ const ChatInterface = () => {
   const [isTyping, setIsTyping] = useState(false);
   const [language, setLanguage] = useState('en');
   const [userSector, setUserSector] = useState('');
+  const [isListening, setIsListening] = useState(false);
+  const [speakingMsgId, setSpeakingMsgId] = useState(null);
   const messagesEndRef = useRef(null);
+  const recognitionRef = useRef(null);
 
   const quickInquiries = [
     { label: '🌱 Green Transit', query: 'What is the greenest transport option to leave the stadium?' },
@@ -41,6 +44,34 @@ const ChatInterface = () => {
     scrollToBottom();
   }, [messages, isTyping]);
 
+  // Speech Recognition Setup
+  useEffect(() => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+      const rec = new SpeechRecognition();
+      rec.continuous = false;
+      rec.interimResults = false;
+      
+      rec.onstart = () => setIsListening(true);
+      rec.onend = () => setIsListening(false);
+      rec.onerror = () => setIsListening(false);
+      rec.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        setInput(transcript);
+      };
+      
+      recognitionRef.current = rec;
+    }
+  }, []);
+
+  // Set recognition language dynamically
+  useEffect(() => {
+    if (recognitionRef.current) {
+      const speechLocales = { en: 'en-US', es: 'es-ES', fr: 'fr-FR', ar: 'ar-SA', ja: 'ja-JP' };
+      recognitionRef.current.lang = speechLocales[language] || 'en-US';
+    }
+  }, [language]);
+
   // Handle system greeting translation on language change
   useEffect(() => {
     const greetings = {
@@ -63,6 +94,9 @@ const ChatInterface = () => {
 
   const handleSend = async (textToSend) => {
     if (!textToSend.trim()) return;
+
+    // Stop speaking if speaking
+    stopSpeaking();
 
     const userMsg = {
       id: Date.now(),
@@ -103,6 +137,62 @@ const ChatInterface = () => {
     handleSend(queryText);
   };
 
+  // Toggle Voice Recognition
+  const toggleListening = () => {
+    if (!recognitionRef.current) {
+      alert("Speech Recognition API is not supported in this browser. Please use Chrome, Edge, or Safari.");
+      return;
+    }
+    if (isListening) {
+      recognitionRef.current.stop();
+    } else {
+      recognitionRef.current.start();
+    }
+  };
+
+  // Text to Speech
+  const startSpeaking = (msgText, msgId) => {
+    if (!('speechSynthesis' in window)) {
+      alert("Text-to-Speech is not supported in this browser.");
+      return;
+    }
+
+    window.speechSynthesis.cancel(); // Stop any active speech
+
+    if (speakingMsgId === msgId) {
+      setSpeakingMsgId(null);
+      return;
+    }
+
+    const utterance = new SpeechSynthesisUtterance(msgText);
+    const speechLocales = { en: 'en-US', es: 'es-ES', fr: 'fr-FR', ar: 'ar-AE', ja: 'ja-JP' };
+    utterance.lang = speechLocales[language] || 'en-US';
+    
+    utterance.onend = () => {
+      setSpeakingMsgId(null);
+    };
+    utterance.onerror = () => {
+      setSpeakingMsgId(null);
+    };
+
+    setSpeakingMsgId(msgId);
+    window.speechSynthesis.speak(utterance);
+  };
+
+  const stopSpeaking = () => {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      setSpeakingMsgId(null);
+    }
+  };
+
+  // Cleanup speech synthesis on unmount
+  useEffect(() => {
+    return () => {
+      stopSpeaking();
+    };
+  }, []);
+
   return (
     <div className="fan-hub-grid">
       {/* Left side: AI Assistant */}
@@ -135,9 +225,34 @@ const ChatInterface = () => {
         <div className="chat-messages">
           {messages.map(msg => (
             <div key={msg.id} className={`message-wrapper ${msg.sender}`}>
-              <div className={`message-bubble ${msg.sender}`}>
+              <div className={`message-bubble ${msg.sender} ${speakingMsgId === msg.id ? 'active-speaking' : ''}`}>
                 <p style={{ whiteSpace: 'pre-line' }}>{msg.text}</p>
-                <span className="message-time">{msg.timestamp}</span>
+                <div className="bubble-footer">
+                  <span className="message-time">{msg.timestamp}</span>
+                  {msg.sender === 'ai' && (
+                    <button 
+                      onClick={() => startSpeaking(msg.text, msg.id)}
+                      className={`speech-speaker-btn ${speakingMsgId === msg.id ? 'speaking' : ''}`}
+                      title={speakingMsgId === msg.id ? "Stop Speaking" : "Read Aloud"}
+                      aria-label="Read Aloud"
+                    >
+                      {speakingMsgId === msg.id ? (
+                        // Stop Speaker symbol or simple waveform
+                        <svg className="speaking-wave" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                          <line x1="6" y1="4" x2="6" y2="20"></line>
+                          <line x1="12" y1="9" x2="12" y2="15"></line>
+                          <line x1="18" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                      ) : (
+                        // Standard Speaker Icon
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                          <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                        </svg>
+                      )}
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           ))}
@@ -169,9 +284,27 @@ const ChatInterface = () => {
 
         {/* Chat Input form */}
         <form className="chat-input-form" onSubmit={handleFormSubmit}>
+          <button 
+            type="button" 
+            onClick={toggleListening} 
+            className={`chat-mic-btn ${isListening ? 'listening' : ''}`}
+            title={isListening ? "Listening... Click to stop" : "Speak your question"}
+            aria-label="Speak your question"
+          >
+            {isListening ? (
+              <span className="mic-pulsing"></span>
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                <line x1="12" y1="19" x2="12" y2="23"></line>
+                <line x1="8" y1="23" x2="16" y2="23"></line>
+              </svg>
+            )}
+          </button>
           <input 
             type="text" 
-            placeholder="Ask me anything (e.g. concessions, sustainability)..." 
+            placeholder={isListening ? "Listening to your voice..." : "Ask me anything (e.g. concessions, sustainability)..."} 
             value={input}
             onChange={(e) => setInput(e.target.value)}
             className="chat-input"

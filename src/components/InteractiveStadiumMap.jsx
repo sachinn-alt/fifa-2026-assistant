@@ -24,6 +24,15 @@ const FACILITY_MARKERS = [
   { id: 'sensory_room', x: 345, y: 55, color: '#9d00ff', label: 'Sensory Room Sec 205', type: 'sensory' }
 ];
 
+// Pre-defined guidance routes from blocks to nearest target facilities
+const NAVIGATION_ROUTES = {
+  '104': { x1: 200, y1: 225, x2: 220, y2: 235, color: '#00ff87', label: 'Path to Veg Food Concession' },
+  '202': { x1: 200, y1: 65, x2: 225, y2: 55, color: '#ffaa00', label: 'Path to Halal Concession' },
+  '205': { x1: 330, y1: 70, x2: 345, y2: 55, color: '#9d00ff', label: 'Path to sensory quiet room' },
+  '308': { x1: 70, y1: 70, x2: 80, y2: 80, color: '#ffaa00', label: 'Path to Halal Concession' },
+  'GATE B': { x1: 375, y1: 145, x2: 355, y2: 155, color: '#00d0ff', label: 'Path to Gate B Restrooms' }
+};
+
 const InteractiveStadiumMap = ({ 
   mode = 'fan', 
   selectedSector = '', 
@@ -66,6 +75,9 @@ const InteractiveStadiumMap = ({
   };
 
   const heatmapZones = getHeatmapZones();
+  
+  // Find active route if selected sector has navigation path defined
+  const activeRoute = mode === 'fan' && selectedSector ? NAVIGATION_ROUTES[selectedSector.toUpperCase()] : null;
 
   return (
     <div className="stadium-map-wrapper glass-panel">
@@ -109,6 +121,10 @@ const InteractiveStadiumMap = ({
             <radialGradient id="incident-glow" cx="50%" cy="50%" r="50%">
               <stop offset="0%" stopColor="#ff0000" stopOpacity="0.8" />
               <stop offset="100%" stopColor="#ff0000" stopOpacity="0" />
+            </radialGradient>
+            <radialGradient id="route-glow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="#00ff87" stopOpacity="0.8" />
+              <stop offset="100%" stopColor="#00ff87" stopOpacity="0" />
             </radialGradient>
             <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
               <feDropShadow dx="0" dy="4" stdDeviation="4" floodColor="#000" floodOpacity="0.5" />
@@ -211,6 +227,52 @@ const InteractiveStadiumMap = ({
             );
           })}
 
+          {/* Holographic Routing Line (Fan Mode Option B) */}
+          {activeRoute && (
+            <g className="map-route-guidance">
+              {/* Outer Glow Line */}
+              <line 
+                x1={activeRoute.x1} 
+                y1={activeRoute.y1} 
+                x2={activeRoute.x2} 
+                y2={activeRoute.y2} 
+                stroke={activeRoute.color} 
+                strokeWidth="6" 
+                strokeLinecap="round"
+                opacity="0.3"
+                className="route-glow-line"
+              />
+              {/* Core Moving Dotted Line */}
+              <line 
+                x1={activeRoute.x1} 
+                y1={activeRoute.y1} 
+                x2={activeRoute.x2} 
+                y2={activeRoute.y2} 
+                stroke={activeRoute.color} 
+                strokeWidth="2.5" 
+                strokeLinecap="round"
+                strokeDasharray="6 4"
+                className="route-dash-line"
+              />
+              {/* Pulse at the target facility */}
+              <circle 
+                cx={activeRoute.x2} 
+                cy={activeRoute.y2} 
+                r={10} 
+                fill="none" 
+                stroke={activeRoute.color} 
+                strokeWidth="1.5" 
+                className="route-ping-pulse"
+              />
+              <circle 
+                cx={activeRoute.x2} 
+                cy={activeRoute.y2} 
+                r={3} 
+                fill={activeRoute.color} 
+              />
+            </g>
+          )}
+
           {/* Fan Facilities Markers (Fan Mode) */}
           {mode === 'fan' && FACILITY_MARKERS.map((facility) => {
             const highlight = selectedSector === '104' && facility.id === 'veg' ||
@@ -254,7 +316,9 @@ const InteractiveStadiumMap = ({
       <div className="map-footer">
         <p className="hint-text">
           {mode === 'fan' 
-            ? '💡 Select a sector block in the list or click on the map to find nearby concessions, wheelchair WCs, and sensory rooms.' 
+            ? activeRoute 
+              ? `🗺️ Holographic Path Active: ${activeRoute.label}.`
+              : '💡 Select a sector block in the list or click on the map to find nearby concessions, wheelchair WCs, and sensory rooms.' 
             : `📈 Heatmap displaying crowd density for Phase: "${simulationPhase.replace('-', ' ').toUpperCase()}".`
           }
         </p>

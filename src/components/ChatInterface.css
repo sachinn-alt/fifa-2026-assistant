@@ -108,6 +108,8 @@
   line-height: 1.45;
   font-size: 0.95rem;
   word-break: break-word;
+  border: 1.5px solid transparent;
+  transition: all 0.3s ease;
 }
 
 .message-bubble.user {
@@ -125,12 +127,62 @@
   border-bottom-left-radius: 4px;
 }
 
+.message-bubble.active-speaking {
+  border-color: var(--fifa-neon-green);
+  box-shadow: 0 0 10px rgba(0, 255, 135, 0.15);
+}
+
+.bubble-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.4rem;
+}
+
 .message-time {
   font-size: 0.65rem;
   opacity: 0.6;
   display: block;
-  text-align: right;
-  margin-top: 0.4rem;
+}
+
+/* Speaker Text-to-Speech button */
+.speech-speaker-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.2rem;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.speech-speaker-btn:hover {
+  background: rgba(255,255,255,0.08);
+  color: var(--fifa-neon-green);
+}
+
+.speech-speaker-btn.speaking {
+  color: var(--fifa-neon-green);
+  animation: pulse-speaker 1.2s infinite;
+}
+
+@keyframes pulse-speaker {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); opacity: 0.7; }
+  100% { transform: scale(1); }
+}
+
+.speaking-wave line {
+  stroke-dasharray: 4;
+  animation: sound-wave-anim 0.8s infinite alternate;
+}
+@keyframes sound-wave-anim {
+  0% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: 8; }
 }
 
 /* Quick Inquiry Pills */
@@ -172,6 +224,7 @@
   gap: 0.5rem;
   padding-top: 0.75rem;
   border-top: 1px solid var(--border-subtle);
+  align-items: center;
 }
 
 .chat-input {
@@ -190,6 +243,50 @@
   outline: none;
   border-color: var(--fifa-neon-green);
   box-shadow: 0 0 8px rgba(0, 255, 135, 0.15);
+}
+
+/* Microphone button */
+.chat-mic-btn {
+  background: var(--bg-panel-hover);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.chat-mic-btn:hover {
+  background: rgba(255,255,255,0.15);
+  color: var(--fifa-neon-green);
+  border-color: var(--fifa-neon-green);
+}
+
+.chat-mic-btn.listening {
+  background: rgba(255, 0, 85, 0.1);
+  color: var(--fifa-magenta);
+  border-color: var(--fifa-magenta);
+  box-shadow: 0 0 10px rgba(255, 0, 85, 0.25);
+}
+
+.mic-pulsing {
+  width: 12px;
+  height: 12px;
+  background: var(--fifa-magenta);
+  border-radius: 50%;
+  display: block;
+  animation: mic-pulse 1s infinite alternate;
+}
+
+@keyframes mic-pulse {
+  0% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(255, 0, 85, 0.6); }
+  100% { transform: scale(1.2); box-shadow: 0 0 0 6px rgba(255, 0, 85, 0); }
 }
 
 .chat-send-btn {

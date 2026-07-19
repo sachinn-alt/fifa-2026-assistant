@@ -62,6 +62,8 @@ const Dashboard = () => {
   const [customDispatchText, setCustomDispatchText] = useState('');
   const [dispatchedTask, setDispatchedTask] = useState(null);
 
+  const activeAlertsCount = incidents.filter(inc => !inc.resolved).length;
+
   const handleReportSubmit = async (e) => {
     e.preventDefault();
     if (!incidentReport.trim()) return;
@@ -112,6 +114,17 @@ const Dashboard = () => {
     if (isCustomMessage) setCustomDispatchText('');
   };
 
+  // Get dynamic transit description for Option C
+  const getTransitStatus = () => {
+    switch (simulationPhase) {
+      case 'pre-match': return '🚌 Inbound Peak';
+      case 'kick-off': return '🟢 Flow Optimal';
+      case 'halftime': return '🟡 Concourse Peak';
+      case 'post-match': return '🔴 Outflow Critical (Metro Hold)';
+      default: return '🟢 Flow Optimal';
+    }
+  };
+
   return (
     <div className="dashboard-container">
       <div className="dashboard-header">
@@ -122,6 +135,28 @@ const Dashboard = () => {
         <span className="live-badge">
           <span className="pulse"></span> LIVE OPERATIONS
         </span>
+      </div>
+
+      {/* Option C: Top Metrics summary bar */}
+      <div className="top-stats-counters-bar">
+        <div className="stat-counter-card glass-panel">
+          <span className="card-label">Stadium Attendance</span>
+          <span className="card-value">68,450 / 70,000 <span className="pct">97.7%</span></span>
+        </div>
+        <div className={`stat-counter-card glass-panel ${activeAlertsCount > 0 ? 'alarm-active' : ''}`}>
+          <span className="card-label">Active Incidents</span>
+          <span className="card-value">
+            {activeAlertsCount} Alerts {activeAlertsCount > 0 && <span className="warning-alarm-dot"></span>}
+          </span>
+        </div>
+        <div className="stat-counter-card glass-panel">
+          <span className="card-label">Volunteer Fleet</span>
+          <span className="card-value">35 Active <span className="fleet-sub">12 Dispatched</span></span>
+        </div>
+        <div className="stat-counter-card glass-panel">
+          <span className="card-label">Transit Network</span>
+          <span className="card-value">{getTransitStatus()}</span>
+        </div>
       </div>
 
       <div className="dashboard-grid-layout">
